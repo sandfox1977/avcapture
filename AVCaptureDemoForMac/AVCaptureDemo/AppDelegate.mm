@@ -19,6 +19,7 @@
 @synthesize formatButton;
 @synthesize resolutionButton;
 @synthesize scalingButton;
+@synthesize frameRateButton;
 
 - (void)dealloc
 {
@@ -56,6 +57,15 @@
     {
         [scalingButton addItemWithTitle:scalingMode];
     }
+    [scalingButton selectItemWithTitle:[captureEngine activeScalingMode]];
+    
+    [frameRateButton removeAllItems];
+    NSArray *allFrameRates = [captureEngine allFrameRates];
+    for(NSString *frameRate in allFrameRates)
+    {
+        [frameRateButton addItemWithTitle:frameRate];
+    }
+    [frameRateButton selectItemWithTitle:[captureEngine activeFrameRate]];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification
@@ -101,16 +111,40 @@
         [resolutionButton addItemWithTitle:resolution];
     }
     [resolutionButton selectItemWithTitle:[captureEngine activeResolution]];
+    
+    [frameRateButton removeAllItems];
+    NSArray *allFrameRates = [captureEngine allFrameRates];
+    for(NSString *frameRate in allFrameRates)
+    {
+        [frameRateButton addItemWithTitle:frameRate];
+    }
+    [frameRateButton selectItemWithTitle:[captureEngine activeFrameRate]];
 }
 
 - (IBAction)clickFormatButton:(id)sender
 {
     [captureEngine setFormat:[formatButton titleOfSelectedItem]];
+    
+    [frameRateButton removeAllItems];
+    NSArray *allFrameRates = [captureEngine allFrameRates];
+    for(NSString *frameRate in allFrameRates)
+    {
+        [frameRateButton addItemWithTitle:frameRate];
+    }
+    [frameRateButton selectItemWithTitle:[captureEngine activeFrameRate]];
 }
 
 - (IBAction)clickResolutionButton:(id)sender
 {
     [captureEngine setResolution:[resolutionButton titleOfSelectedItem]];
+    
+    [frameRateButton removeAllItems];
+    NSArray *allFrameRates = [captureEngine allFrameRates];
+    for(NSString *frameRate in allFrameRates)
+    {
+        [frameRateButton addItemWithTitle:frameRate];
+    }
+    [frameRateButton selectItemWithTitle:[captureEngine activeFrameRate]];
 }
 
 - (IBAction)clickScalingButton:(id)sender
@@ -126,6 +160,11 @@
 - (IBAction)clickInfoButton:(id)sender
 {
     [captureEngine printDeviceInfo];
+}
+
+- (IBAction)clickFrameRateButton:(id)sender
+{
+    [captureEngine setFrameRate:[frameRateButton titleOfSelectedItem] Index:[frameRateButton indexOfSelectedItem]];
 }
 
 - (void)checkStatus

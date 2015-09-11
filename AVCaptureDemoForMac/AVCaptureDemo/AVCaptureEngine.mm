@@ -178,6 +178,14 @@ static void capture_cleanup(void* p)
                     [previewConnection setVideoMinFrameDuration: CMTimeMakeWithSeconds(1.0 / kFrameRate, 10000)];
                 }
             }
+            if(YES == [previewConnection respondsToSelector:@selector(isVideoMaxFrameDurationSupported)])
+            {
+                BOOL supportsVideoMaxFrameDuration = [previewConnection isVideoMaxFrameDurationSupported];
+                if(YES == supportsVideoMaxFrameDuration)
+                {
+                    [previewConnection setVideoMaxFrameDuration: CMTimeMakeWithSeconds(1.0 / kFrameRate, 10000)];
+                }
+            }
         }
         // end set
         
@@ -355,7 +363,7 @@ static void capture_cleanup(void* p)
     return formatArray;
 }
 
-- (NSArray*)allCodecType
+- (NSArray*)allCodecTypes
 {
     // check codec type result
     /*
@@ -427,6 +435,19 @@ static void capture_cleanup(void* p)
     return scalingModeArray;
 }
 
+- (NSArray*)allFrameRates
+{
+    NSArray *videoSupportedFrameRateRanges = [[captureDevice activeFormat] videoSupportedFrameRateRanges];
+    NSMutableArray* frameRateArray = [NSMutableArray arrayWithCapacity:[videoSupportedFrameRateRanges count]];
+    AVFrameRateRange * frameRateRange = nil;
+    for(frameRateRange in videoSupportedFrameRateRanges)
+    {
+        [frameRateArray addObject:[NSString stringWithFormat:@"%.2f" ,[frameRateRange maxFrameRate]]];
+    }
+    
+    return frameRateArray;
+}
+
 - (void)setFormat:(NSString*)format
 {
     NSNumber *pixelFormatType = [self getFormatNumber:format];
@@ -493,6 +514,54 @@ static void capture_cleanup(void* p)
     NSLog(@"[setScalingMode] Get videoSettings after set: %@", videoSettings);
 }
 
+- (void)setFrameRate:(NSString*)frameRate Index:(NSInteger)index
+{
+    float maxFrameRate = [frameRate floatValue];
+    NSLog(@"[setFrameRate] set new frame rate: %.2f, index = %d", maxFrameRate, (int)index);
+    
+    NSArray *connections = [captureOutput connections];
+    NSUInteger connectionCount = [connections count];
+    if(connectionCount > 0)
+    {
+        AVCaptureConnection *connection = [connections objectAtIndex:0];
+        
+        [captureSession beginConfiguration];
+        // set frame rate, default is 30 fps
+        if(YES == [connection respondsToSelector:@selector(isVideoMinFrameDurationSupported)])
+        {
+            BOOL supportsVideoMinFrameDuration = [connection isVideoMinFrameDurationSupported];
+            if(YES == supportsVideoMinFrameDuration)
+            {
+                [connection setVideoMinFrameDuration: kCMTimeInvalid];//CMTimeMakeWithSeconds(1.0 / maxFrameRate, 10000)];
+            }
+        }
+        if(YES == [connection respondsToSelector:@selector(isVideoMaxFrameDurationSupported)])
+        {
+            BOOL supportsVideoMaxFrameDuration = [connection isVideoMaxFrameDurationSupported];
+            if(YES == supportsVideoMaxFrameDuration)
+            {
+                [connection setVideoMaxFrameDuration: kCMTimeInvalid];//CMTimeMakeWithSeconds(1.0 / maxFrameRate, 10000)];
+            }
+        }
+        [captureSession commitConfiguration];
+    }
+    
+    NSArray *videoSupportedFrameRateRanges = [[captureDevice activeFormat] videoSupportedFrameRateRanges];
+    AVFrameRateRange * frameRateRange = [videoSupportedFrameRateRanges objectAtIndex:index];
+    NSError *error = nil;
+    if(nil != frameRateRange && YES == [captureDevice lockForConfiguration:&error])
+    {
+        [captureDevice setActiveVideoMinFrameDuration:[frameRateRange minFrameDuration]];
+        [captureDevice setActiveVideoMaxFrameDuration:[frameRateRange maxFrameDuration]];
+        [captureDevice unlockForConfiguration];
+        NSLog(@"[setFrameRate] set new frame rate: %@, index = %d", frameRateRange, (int)index);
+    }
+    else
+    {
+        NSLog(@"[setFrameRate] set new frame rate fail: %@, error: %@", frameRateRange, error);
+    }
+}
+
 - (NSString*)activeFormat
 {
     NSDictionary* videoSettings = [captureOutput videoSettings];
@@ -510,6 +579,23 @@ static void capture_cleanup(void* p)
     NSDictionary* videoSettings = [captureOutput videoSettings];
     NSString* scalingMode = [videoSettings objectForKey:AVVideoScalingModeKey];
     return scalingMode;
+}
+
+- (NSString*)activeFrameRate
+{
+    float maxFrameRate = 1.0 / CMTimeGetSeconds([captureDevice activeVideoMinFrameDuration]);
+//    NSArray *videoSupportedFrameRateRanges = [[captureDevice activeFormat] videoSupportedFrameRateRanges];
+//    AVFrameRateRange * frameRateRange = nil;
+//    for(frameRateRange in videoSupportedFrameRateRanges)
+//    {
+//        if(0 == CMTimeCompare([captureDevice activeVideoMinFrameDuration], [frameRateRange minFrameDuration]))
+//        {
+//            maxFrameRate = [frameRateRange maxFrameRate];
+//            break;
+//        }
+//    }
+    NSString *frameRate = [NSString stringWithFormat:@"%.2f", maxFrameRate];
+    return frameRate;
 }
 
 - (NSString*)summaryInfo

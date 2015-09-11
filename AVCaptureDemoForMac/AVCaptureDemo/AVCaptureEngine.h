@@ -61,15 +61,18 @@
 
 - (NSString*)currentDeviceName;
 - (NSArray*)allFormats;
-- (NSArray*)allCodecType;
+- (NSArray*)allCodecTypes;
 - (NSArray*)allResolutions;
 - (NSArray*)allScalingModes;
+- (NSArray*)allFrameRates;
 - (void)setFormat:(NSString*)format;
 - (void)setResolution:(NSString*)resolution;
 - (void)setScalingMode:(NSString*)scalingMode;
+- (void)setFrameRate:(NSString*)frameRate Index:(NSInteger)index;
 - (NSString*)activeFormat;
 - (NSString*)activeResolution;
 - (NSString*)activeScalingMode;
+- (NSString*)activeFrameRate;
 - (NSString*)summaryInfo;
 
 @end
