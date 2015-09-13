@@ -22,6 +22,7 @@
     NSPopUpButton *resolutionButton;
     NSPopUpButton *scalingButton;
     NSPopUpButton *frameRateButton;
+    NSPopUpButton *deviceFormatButton;
     
     AVCaptureEngine *captureEngine;
     
@@ -37,6 +38,7 @@
 @property (assign) IBOutlet NSPopUpButton *resolutionButton;
 @property (assign) IBOutlet NSPopUpButton *scalingButton;
 @property (assign) IBOutlet NSPopUpButton *frameRateButton;
+@property (assign) IBOutlet NSPopUpButton *deviceFormatButton;
 
 - (IBAction)clickStartButton:(id)sender;
 - (IBAction)clickStopButton:(id)sender;
@@ -47,6 +49,7 @@
 - (IBAction)clickScreenButton:(id)sender;
 - (IBAction)clickInfoButton:(id)sender;
 - (IBAction)clickFrameRateButton:(id)sender;
+- (IBAction)clickDeviceFormatButton:(id)sender;
 
 - (void)checkStatus;
 

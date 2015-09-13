@@ -448,6 +448,24 @@ static void capture_cleanup(void* p)
     return frameRateArray;
 }
 
+- (NSArray*)allDeviceFormats
+{
+    NSArray *formats = [captureDevice formats];
+    NSMutableArray* formatArray = [NSMutableArray arrayWithCapacity:[formats count]];
+    CMFormatDescriptionRef formatDescription = nil;
+    FourCharCode codecType = 0;
+    CMVideoDimensions dimensions = {0, 0};
+    for(AVCaptureDeviceFormat *format in formats)
+    {
+        formatDescription = [format formatDescription];
+        codecType = CMVideoFormatDescriptionGetCodecType(formatDescription);
+        dimensions = CMVideoFormatDescriptionGetDimensions(formatDescription);
+        [formatArray addObject:[NSString stringWithFormat:@"%@, %dx%d", NSFileTypeForHFSTypeCode(codecType), dimensions.width, dimensions.height]];
+    }
+    
+    return formatArray;
+}
+
 - (void)setFormat:(NSString*)format
 {
     NSNumber *pixelFormatType = [self getFormatNumber:format];
@@ -552,13 +570,31 @@ static void capture_cleanup(void* p)
     if(nil != frameRateRange && YES == [captureDevice lockForConfiguration:&error])
     {
         [captureDevice setActiveVideoMinFrameDuration:[frameRateRange minFrameDuration]];
-        [captureDevice setActiveVideoMaxFrameDuration:[frameRateRange maxFrameDuration]];
+        [captureDevice setActiveVideoMaxFrameDuration:[frameRateRange maxFrameDuration]]; // If set max frame duration with range min frame duration, the API maybe throw a exception NSInvalidArgumentException.
         [captureDevice unlockForConfiguration];
-        NSLog(@"[setFrameRate] set new frame rate: %@, index = %d", frameRateRange, (int)index);
+        NSLog(@"[setFrameRate] set new frame rate: %@", frameRateRange);
     }
     else
     {
         NSLog(@"[setFrameRate] set new frame rate fail: %@, error: %@", frameRateRange, error);
+    }
+}
+
+- (void)setDeviceFormat:(NSString*)deviceFormat Index:(NSInteger)index
+{
+    NSLog(@"[setDeviceFormat] set new device format: %@, index = %d", deviceFormat, (int)index);
+    NSArray *formats = [captureDevice formats];
+    AVCaptureDeviceFormat *format = [formats objectAtIndex:index];
+    NSError *error = nil;
+    if(nil != format && YES == [captureDevice lockForConfiguration:&error])
+    {
+        [captureDevice setActiveFormat:format];
+        [captureDevice unlockForConfiguration];
+        NSLog(@"[setDeviceFormat] set new device format: %@", format);
+    }
+    else
+    {
+        NSLog(@"[setDeviceFormat] set new device format fail: %@, error: %@", format, error);
     }
 }
 
@@ -594,8 +630,17 @@ static void capture_cleanup(void* p)
 //            break;
 //        }
 //    }
-    NSString *frameRate = [NSString stringWithFormat:@"%.2f", maxFrameRate];
-    return frameRate;
+    
+    return [NSString stringWithFormat:@"%.2f", maxFrameRate];
+}
+
+- (NSString*)activeDeviceFormat
+{
+    AVCaptureDeviceFormat *format = [captureDevice activeFormat];
+    CMFormatDescriptionRef formatDescription = [format formatDescription];
+    FourCharCode codecType = CMVideoFormatDescriptionGetCodecType(formatDescription);;
+    CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(formatDescription);
+    return [NSString stringWithFormat:@"%@, %dx%d", NSFileTypeForHFSTypeCode(codecType), dimensions.width, dimensions.height];
 }
 
 - (NSString*)summaryInfo

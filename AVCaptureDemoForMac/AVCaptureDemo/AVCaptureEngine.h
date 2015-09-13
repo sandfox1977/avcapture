@@ -65,14 +65,17 @@
 - (NSArray*)allResolutions;
 - (NSArray*)allScalingModes;
 - (NSArray*)allFrameRates;
+- (NSArray*)allDeviceFormats;
 - (void)setFormat:(NSString*)format;
 - (void)setResolution:(NSString*)resolution;
 - (void)setScalingMode:(NSString*)scalingMode;
 - (void)setFrameRate:(NSString*)frameRate Index:(NSInteger)index;
+- (void)setDeviceFormat:(NSString*)deviceFormat Index:(NSInteger)index;
 - (NSString*)activeFormat;
 - (NSString*)activeResolution;
 - (NSString*)activeScalingMode;
 - (NSString*)activeFrameRate;
+- (NSString*)activeDeviceFormat;
 - (NSString*)summaryInfo;
 
 @end
