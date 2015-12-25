@@ -130,34 +130,16 @@
 - (IBAction)clickFormatButton:(id)sender
 {
     [captureEngine setFormat:[formatButton titleOfSelectedItem]];
-    
-    [deviceFormatButton selectItemWithTitle:[captureEngine activeDeviceFormat]];
-    
-    [frameRateButton removeAllItems];
-    [frameRateButton addItemsWithTitles:[captureEngine allFrameRates]];
-    [frameRateButton selectItemWithTitle:[captureEngine activeFrameRate]];
 }
 
 - (IBAction)clickResolutionButton:(id)sender
 {
     [captureEngine setResolution:[resolutionButton titleOfSelectedItem]];
-    
-    [deviceFormatButton selectItemWithTitle:[captureEngine activeDeviceFormat]];
-    
-    [frameRateButton removeAllItems];
-    [frameRateButton addItemsWithTitles:[captureEngine allFrameRates]];
-    [frameRateButton selectItemWithTitle:[captureEngine activeFrameRate]];
 }
 
 - (IBAction)clickScalingButton:(id)sender
 {
     [captureEngine setScalingMode:[scalingButton titleOfSelectedItem]];
-    
-    [deviceFormatButton selectItemWithTitle:[captureEngine activeDeviceFormat]];
-    
-    [frameRateButton removeAllItems];
-    [frameRateButton addItemsWithTitles:[captureEngine allFrameRates]];
-    [frameRateButton selectItemWithTitle:[captureEngine activeFrameRate]];
 }
 
 - (IBAction)clickScreenButton:(id)sender
@@ -168,34 +150,16 @@
 - (IBAction)clickInfoButton:(id)sender
 {
     [captureEngine printDeviceInfo];
-    
-    [deviceFormatButton selectItemWithTitle:[captureEngine activeDeviceFormat]];
-    
-    [frameRateButton removeAllItems];
-    [frameRateButton addItemsWithTitles:[captureEngine allFrameRates]];
-    [frameRateButton selectItemWithTitle:[captureEngine activeFrameRate]];
 }
 
 - (IBAction)clickFrameRateButton:(id)sender
 {
     [captureEngine setFrameRate:[frameRateButton titleOfSelectedItem] Index:[frameRateButton indexOfSelectedItem]];
-    
-    [deviceFormatButton removeAllItems];
-    [deviceFormatButton addItemsWithTitles:[captureEngine allDeviceFormats]];
-    [deviceFormatButton selectItemWithTitle:[captureEngine activeDeviceFormat]];
-    
-    [frameRateButton removeAllItems];
-    [frameRateButton addItemsWithTitles:[captureEngine allFrameRates]];
-    [frameRateButton selectItemWithTitle:[captureEngine activeFrameRate]];
 }
 
 - (IBAction)clickDeviceFormatButton:(id)sender
 {
     [captureEngine setDeviceFormat:[deviceFormatButton titleOfSelectedItem] Index:[deviceFormatButton indexOfSelectedItem]];
-    
-    [frameRateButton removeAllItems];
-    [frameRateButton addItemsWithTitles:[captureEngine allFrameRates]];
-    [frameRateButton selectItemWithTitle:[captureEngine activeFrameRate]];
 }
 
 - (void)checkStatus
