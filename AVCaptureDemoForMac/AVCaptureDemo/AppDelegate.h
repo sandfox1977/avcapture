@@ -11,7 +11,7 @@
 #import "AVCaptureEngine.h"
 #import "AVCaptureView.h"
 
-@interface AppDelegate : NSObject <NSApplicationDelegate>
+@interface AppDelegate : NSObject <NSApplicationDelegate, AVCaptureEngineDelegate>
 {
     NSWindow *window;
     NSView *previewView;

@@ -33,6 +33,7 @@
     [previewView setWantsLayer:YES];
     
     captureEngine = [[AVCaptureEngine alloc] initWithView:previewView CaptureView:captureView];
+    [captureEngine setDelegate:self];
     
     [deviceName setTitleWithMnemonic:[captureEngine currentDeviceName]];
     
@@ -60,6 +61,30 @@
 - (void)applicationWillTerminate:(NSNotification *)notification
 {
 	[captureEngine release];
+}
+
+- (void)deviceChangeWithType:(AVCaptureDeviceChangeType)type
+{
+    switch (type) {
+        case AVCaptureDeviceChangeSelected:
+            [self clickSwitchButton:nil];
+            break;
+            
+        case AVCaptureDeviceChangeActiveFormat:
+            [deviceFormatButton removeAllItems];
+            [deviceFormatButton addItemsWithTitles:[captureEngine allDeviceFormats]];
+            [deviceFormatButton selectItemWithTitle:[captureEngine activeDeviceFormat]];
+            break;
+            
+        case AVCaptureDeviceChangeActiveFrameRate:
+            [frameRateButton removeAllItems];
+            [frameRateButton addItemsWithTitles:[captureEngine allFrameRates]];
+            [frameRateButton selectItemWithTitle:[captureEngine activeFrameRate]];
+            break;
+            
+        default:
+            break;
+    }
 }
 
 - (IBAction)clickStartButton:(id)sender
@@ -154,6 +179,14 @@
 - (IBAction)clickFrameRateButton:(id)sender
 {
     [captureEngine setFrameRate:[frameRateButton titleOfSelectedItem] Index:[frameRateButton indexOfSelectedItem]];
+    
+    [deviceFormatButton removeAllItems];
+    [deviceFormatButton addItemsWithTitles:[captureEngine allDeviceFormats]];
+    [deviceFormatButton selectItemWithTitle:[captureEngine activeDeviceFormat]];
+    
+    [frameRateButton removeAllItems];
+    [frameRateButton addItemsWithTitles:[captureEngine allFrameRates]];
+    [frameRateButton selectItemWithTitle:[captureEngine activeFrameRate]];
 }
 
 - (IBAction)clickDeviceFormatButton:(id)sender

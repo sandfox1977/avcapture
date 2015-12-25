@@ -12,6 +12,16 @@
 
 #import "AVCaptureView.h"
 
+typedef NS_ENUM(NSInteger, AVCaptureDeviceChangeType) {
+    AVCaptureDeviceChangeSelected           = 0,
+    AVCaptureDeviceChangeActiveFormat       = 1,
+    AVCaptureDeviceChangeActiveFrameRate    = 2
+};
+
+@protocol AVCaptureEngineDelegate
+- (void)deviceChangeWithType:(AVCaptureDeviceChangeType)type;
+@end
+
 @interface AVCaptureEngine : NSObject <AVCaptureVideoDataOutputSampleBufferDelegate>
 {
 @private
@@ -46,9 +56,13 @@
     int totalFrameCount;
     
     AVCaptureView *captureView;
+    
+    id<AVCaptureEngineDelegate> captuerDelegate;
 }
 
 - (id)initWithView:(NSView*)pView CaptureView:(AVCaptureView*)cView;
+
+- (void)setDelegate:(id<AVCaptureEngineDelegate>)delegate;
 
 - (BOOL)isRunning;
 - (void)startRunning;
