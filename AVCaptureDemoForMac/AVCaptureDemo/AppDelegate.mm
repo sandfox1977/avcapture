@@ -31,6 +31,7 @@
 {
     // Insert code here to initialize your application
     [previewView setWantsLayer:YES];
+    [captureView setWantsLayer:YES];
     
     captureEngine = [[AVCaptureEngine alloc] initWithView:previewView CaptureView:captureView];
     [captureEngine setDelegate:self];

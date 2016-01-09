@@ -15,7 +15,10 @@
 #define OPEN_SCREEN_CAPTURE     0
 #define OPEN_CAPTURE_THREAD     1
 #define SET_CONNECTION_FPS      0
+#define USE_CAPTURE_LAYER       0
+#define ENABLE_REMOVE_LAYER     1
 
+NSString* kDefaultFormat = @"kCVPixelFormatType_Default";
 NSString* kScalingMode = AVVideoScalingModeResizeAspectFill;
 float kFrameRate = 30.0;
 
@@ -45,6 +48,10 @@ static void capture_cleanup(void* p)
 - (NSString*)getFormatString:(NSNumber*)formatNumber;
 
 - (NSSize)getResolutionSize:(NSString*)sessionPreset;
+
+- (NSString*)getCaptureLayerStatusString:(AVQueuedSampleBufferRenderingStatus)status;
+- (BOOL)isCaptureLayerHidden;
+- (void)setCaptureLayerHidden:(BOOL)hidden;
 
 @end
 
@@ -147,6 +154,7 @@ static void capture_cleanup(void* p)
         NSDictionary* videoSettings = [captureOutput videoSettings];
         activePixelFormatType = [videoSettings objectForKey:(NSString*)kCVPixelBufferPixelFormatTypeKey];
         activeScalingMode = [videoSettings objectForKey:AVVideoScalingModeKey];
+        NSLog(@"[init] Get default videoSettings: %@", videoSettings);
   
         [captureSession setSessionPreset:activeResolution];
         
@@ -206,6 +214,18 @@ static void capture_cleanup(void* p)
         totalFrameCount = 0;
         
         captureView = cView;
+        CALayer *captureViewLayer = [captureView layer];
+        CGColorRef blackColor = CGColorCreateGenericGray(0.0, 1.0);
+        [captureViewLayer setBackgroundColor:blackColor];
+        CFRelease(blackColor);
+        // create and attach capture layer
+        captureLayer = [[AVSampleBufferDisplayLayer alloc] init];
+        captureLayer.opaque = TRUE;
+        captureLayer.frame = captureView.bounds;
+        [captureLayer setAutoresizingMask:kCALayerWidthSizable | kCALayerHeightSizable];
+        [captureLayer setAffineTransform:CGAffineTransformRotate(captureLayer.affineTransform, (0.0f * M_PI) / 180.0f)];
+        captureLayer.videoGravity = AVLayerVideoGravityResizeAspect;
+        [captureViewLayer addSublayer:captureLayer];
         
         captuerDelegate = nil;
     }
@@ -217,6 +237,9 @@ static void capture_cleanup(void* p)
 {
     [fpsTimer invalidate];
     fpsTimer = nil;
+    
+    [captureLayer removeFromSuperlayer];
+    [captureLayer release];
     
     [captureSession beginConfiguration];
     [previewLayer removeFromSuperlayer];
@@ -400,6 +423,7 @@ static void capture_cleanup(void* p)
     {
         [formatArray addObject:[self getFormatString:pixelFormatType]];
     }
+    [formatArray addObject:kDefaultFormat];
     
     return formatArray;
 }
@@ -517,10 +541,19 @@ static void capture_cleanup(void* p)
 
 - (void)setFormat:(NSString*)format
 {
-    NSNumber *pixelFormatType = [self getFormatNumber:format];
-    if(nil == pixelFormatType)
+    NSNumber *pixelFormatType = nil;
+    BOOL bDefaultFormat = NO;
+    if(NSOrderedSame == [format compare:kDefaultFormat])
     {
-        return;
+        bDefaultFormat = YES;
+    }
+    else
+    {
+        pixelFormatType = [self getFormatNumber:format];
+        if(nil == pixelFormatType)
+        {
+            return;
+        }
     }
     
     activePixelFormatType = pixelFormatType;
@@ -529,8 +562,11 @@ static void capture_cleanup(void* p)
     NSLog(@"[setFormat] Get videoSettings before set: %@", videoSettings);
     
     NSMutableDictionary* newVideoSettings = [NSMutableDictionary dictionaryWithCapacity:0];
-    [newVideoSettings addEntriesFromDictionary:videoSettings];
-    [newVideoSettings setObject:activePixelFormatType forKey:(NSString*)kCVPixelBufferPixelFormatTypeKey];
+    if(NO == bDefaultFormat)
+    {
+        [newVideoSettings addEntriesFromDictionary:videoSettings];
+        [newVideoSettings setObject:activePixelFormatType forKey:(NSString*)kCVPixelBufferPixelFormatTypeKey];
+    }
     [captureSession beginConfiguration];
     [captureOutput setVideoSettings:newVideoSettings];
     [captureSession commitConfiguration];
@@ -552,9 +588,12 @@ static void capture_cleanup(void* p)
     NSLog(@"[setResolution] Get videoSettings before set: %@", videoSettings);
     
     NSMutableDictionary* newVideoSettings = [NSMutableDictionary dictionaryWithCapacity:0];
-    [newVideoSettings addEntriesFromDictionary:videoSettings];
-    [newVideoSettings setObject:activePixelFormatType forKey:(NSString*)kCVPixelBufferPixelFormatTypeKey];
-    [newVideoSettings setObject:kScalingMode forKey:AVVideoScalingModeKey];
+    if(nil != activePixelFormatType)
+    {
+        [newVideoSettings addEntriesFromDictionary:videoSettings];
+        [newVideoSettings setObject:activePixelFormatType forKey:(NSString*)kCVPixelBufferPixelFormatTypeKey];
+        [newVideoSettings setObject:kScalingMode forKey:AVVideoScalingModeKey];
+    }
     [captureSession beginConfiguration];
     [captureOutput setVideoSettings:newVideoSettings];
     [captureSession commitConfiguration];
@@ -571,8 +610,11 @@ static void capture_cleanup(void* p)
     NSLog(@"[setScalingMode] Get videoSettings before set: %@", videoSettings);
     
     NSMutableDictionary* newVideoSettings = [NSMutableDictionary dictionaryWithCapacity:0];
-    [newVideoSettings addEntriesFromDictionary:videoSettings];
-    [newVideoSettings setObject:activeScalingMode forKey:AVVideoScalingModeKey];
+    if(nil != activePixelFormatType)
+    {
+        [newVideoSettings addEntriesFromDictionary:videoSettings];
+        [newVideoSettings setObject:activeScalingMode forKey:AVVideoScalingModeKey];
+    }
     [captureSession beginConfiguration];
     [captureOutput setVideoSettings:newVideoSettings];
     [captureSession commitConfiguration];
@@ -653,7 +695,12 @@ static void capture_cleanup(void* p)
 {
     NSDictionary* videoSettings = [captureOutput videoSettings];
     NSNumber* pixelFormatType = [videoSettings objectForKey:(NSString*)kCVPixelBufferPixelFormatTypeKey];
-    return [self getFormatString:pixelFormatType];
+    NSString* format = kDefaultFormat;
+    if(nil != pixelFormatType)
+    {
+        format = [self getFormatString:pixelFormatType];
+    }
+    return format;
 }
 
 - (NSString*)activeResolution
@@ -697,28 +744,38 @@ static void capture_cleanup(void* p)
 - (NSString*)summaryInfo
 {
     NSMutableString *summaryInfo = [NSMutableString stringWithCapacity:0];
-    [summaryInfo appendFormat:@"Pixel Format Type: %@", [self getFormatString:[NSNumber numberWithUnsignedInt:realPixelFormat]]];
-    [summaryInfo appendString:@"\n"];
-    [summaryInfo appendFormat:@"Resolution: %ld x %ld", realPixelWidth, realPixelHeight];
-    [summaryInfo appendString:@"\n"];
-    [summaryInfo appendFormat:@"Session Preset: %@", [captureSession sessionPreset]];
-    [summaryInfo appendString:@"\n"];
-//    [summaryInfo appendFormat:@"Preview Video Gravity: %@", [captureLayer videoGravity]];
-//    [summaryInfo appendString:@"\n"];
-    [summaryInfo appendFormat:@"Frame Rate: %d", realFrameRate];
-    [summaryInfo appendString:@"\n"];
-    [summaryInfo appendFormat:@"Frame Count: %d", totalFrameCount];
-    [summaryInfo appendString:@"\n"];
+    [summaryInfo appendFormat:@"Pixel Format Type: %@ [%@ - 0x%8x]", [self getFormatString:[NSNumber numberWithUnsignedInt:realPixelFormat]], NSFileTypeForHFSTypeCode(realPixelFormat), realPixelFormat];
+    [summaryInfo appendFormat:@"\nResolution: %ld x %ld", realPixelWidth, realPixelHeight];
+    [summaryInfo appendFormat:@"\nSession Preset: %@", [captureSession sessionPreset]];
+    [summaryInfo appendFormat:@"\nFrame Rate: %d", realFrameRate];
+    [summaryInfo appendFormat:@"\nFrame Count: %d", totalFrameCount];
     
     if(NO == bScreenCapture) {
-        [summaryInfo appendFormat:@"Device Active Info: %@ min FD = %f, max FD = %f", [captureDevice activeFormat], CMTimeGetSeconds([captureDevice activeVideoMinFrameDuration]), CMTimeGetSeconds([captureDevice activeVideoMaxFrameDuration])];
+        [summaryInfo appendFormat:@"\nDevice Active Info: %@ min FD = %f, max FD = %f", [captureDevice activeFormat], CMTimeGetSeconds([captureDevice activeVideoMinFrameDuration]), CMTimeGetSeconds([captureDevice activeVideoMaxFrameDuration])];
     }
+    
+//    [summaryInfo appendFormat:@"\nnCapture Layer Video Gravity: %@", [captureLayer videoGravity]];
+    [summaryInfo appendFormat:@"\nCapture Layer Status: %@ - %@, hidden = %d", [self getCaptureLayerStatusString:[captureLayer status]], [captureLayer error], [self isCaptureLayerHidden]];
     
     return summaryInfo;
 }
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
+#if USE_CAPTURE_LAYER
+    CMFormatDescriptionRef formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer);
+    FourCharCode codecType = CMVideoFormatDescriptionGetCodecType(formatDescription);
+    CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(formatDescription);
+    
+    realPixelFormat = codecType;
+    realPixelWidth = dimensions.width;
+    realPixelHeight = dimensions.height;
+    
+    frameCount++;
+    totalFrameCount++;
+    
+    [captureLayer enqueueSampleBuffer:sampleBuffer];
+#else
     CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     if(kCVReturnSuccess == CVPixelBufferLockBaseAddress(imageBuffer, kCVPixelBufferLock_ReadOnly))
     {
@@ -771,6 +828,7 @@ static void capture_cleanup(void* p)
         frameCount++;
         totalFrameCount++;
         
+        [self setCaptureLayerHidden:YES];
         if(true == isPlanar)
         {
             [captureView renderFrame:(unsigned char**)planeAddress Length:(int*)planeSize Count:(int)planeCount Width:(int)pixelWidth Height:(int)pixelHeight Format:pixelFormat];
@@ -785,6 +843,23 @@ static void capture_cleanup(void* p)
         
         CVPixelBufferUnlockBaseAddress(imageBuffer, kCVPixelBufferLock_ReadOnly);
     }
+    else
+    {
+        CMFormatDescriptionRef formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer);
+        FourCharCode codecType = CMVideoFormatDescriptionGetCodecType(formatDescription);
+        CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(formatDescription);
+        
+        realPixelFormat = codecType;
+        realPixelWidth = dimensions.width;
+        realPixelHeight = dimensions.height;
+        
+        frameCount++;
+        totalFrameCount++;
+        
+        [self setCaptureLayerHidden:NO];
+        [captureLayer enqueueSampleBuffer:sampleBuffer];
+    }
+#endif
 }
 
 #pragma mark Methods for internal use
@@ -961,9 +1036,12 @@ static void capture_cleanup(void* p)
     NSLog(@"[setCaptureOutputInfo] Get videoSettings before set: %@", videoSettings);
 
     NSMutableDictionary* newVideoSettings = [NSMutableDictionary dictionaryWithCapacity:0];
-    [newVideoSettings addEntriesFromDictionary:videoSettings];
-    [newVideoSettings setObject:activePixelFormatType forKey:(NSString*)kCVPixelBufferPixelFormatTypeKey];
-    [newVideoSettings setObject:kScalingMode forKey:AVVideoScalingModeKey];
+    if(nil != activePixelFormatType)
+    {
+        [newVideoSettings addEntriesFromDictionary:videoSettings];
+        [newVideoSettings setObject:activePixelFormatType forKey:(NSString*)kCVPixelBufferPixelFormatTypeKey];
+        [newVideoSettings setObject:kScalingMode forKey:AVVideoScalingModeKey];
+    }
     [captureOutput setVideoSettings:newVideoSettings];
     
     videoSettings = [captureOutput videoSettings];
@@ -1054,6 +1132,8 @@ static void capture_cleanup(void* p)
  
  kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange = '420v',
  kCVPixelFormatType_420YpCbCr8BiPlanarFullRange  = '420f',
+ 
+ kCMVideoCodecType_JPEG_OpenDML    = 'dmb1',
 */
 
 - (NSNumber*)getFormatNumber:(NSString*)formatString
@@ -1128,6 +1208,10 @@ static void capture_cleanup(void* p)
     {
         formatNumber = [NSNumber numberWithUnsignedInt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange];
     }
+    else if(NSOrderedSame == [formatString compare:@"kCMVideoCodecType_JPEG_OpenDML"])
+    {
+        formatNumber = [NSNumber numberWithUnsignedInt:kCMVideoCodecType_JPEG_OpenDML];
+    }
     else 
     {
         NSLog(@"Get format number fail, format string = %@", formatString);
@@ -1192,6 +1276,9 @@ static void capture_cleanup(void* p)
         case kCVPixelFormatType_420YpCbCr8BiPlanarFullRange:
             formatString = @"kCVPixelFormatType_420YpCbCr8BiPlanarFullRange";
             break;
+        case kCMVideoCodecType_JPEG_OpenDML:
+            formatString = @"kCMVideoCodecType_JPEG_OpenDML";
+            break;
             
         default:
             NSLog(@"Get format string fail, format number = %@", formatNumber);
@@ -1233,6 +1320,49 @@ static void capture_cleanup(void* p)
     }
     
     return resolutionSize;
+}
+
+- (NSString*)getCaptureLayerStatusString:(AVQueuedSampleBufferRenderingStatus)status
+{
+    NSString *statusString = NULL;
+    switch (status) {
+        case AVQueuedSampleBufferRenderingStatusRendering:
+            statusString = @"AVQueuedSampleBufferRenderingStatusRendering";
+            break;
+            
+        case AVQueuedSampleBufferRenderingStatusFailed:
+            statusString = @"AVQueuedSampleBufferRenderingStatusFailed";
+            break;
+            
+        case AVQueuedSampleBufferRenderingStatusUnknown:
+        default:
+            statusString = @"AVQueuedSampleBufferRenderingStatusUnknown";
+            break;
+    }
+    
+    return statusString;
+}
+
+- (BOOL)isCaptureLayerHidden
+{
+    BOOL isHidden = (YES == captureLayer.hidden || NO == [[[captureView layer] sublayers] containsObject:captureLayer]);
+    return isHidden;
+}
+
+- (void)setCaptureLayerHidden:(BOOL)hidden
+{
+#if ENABLE_REMOVE_LAYER
+    BOOL contain = [[[captureView layer] sublayers] containsObject:captureLayer];
+    if (YES == hidden && YES == contain) {
+        [captureLayer removeFromSuperlayer];
+    } else if (NO == hidden && NO == contain) {
+        captureLayer.frame = captureView.bounds;
+        [[captureView layer] addSublayer:captureLayer];
+        [captureLayer flush];
+    }
+#else
+    captureLayer.hidden = hidden;
+#endif
 }
 
 @end
