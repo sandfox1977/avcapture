@@ -11,7 +11,7 @@
 #import "AVCaptureEngine.h"
 #import "AVCaptureView.h"
 
-@interface AppDelegate : NSObject <NSApplicationDelegate>
+@interface AppDelegate : NSObject <NSApplicationDelegate, AVCaptureEngineDelegate>
 {
     NSWindow *window;
     NSView *previewView;
@@ -21,6 +21,8 @@
     NSPopUpButton *formatButton;
     NSPopUpButton *resolutionButton;
     NSPopUpButton *scalingButton;
+    NSPopUpButton *frameRateButton;
+    NSPopUpButton *deviceFormatButton;
     
     AVCaptureEngine *captureEngine;
     
@@ -35,6 +37,8 @@
 @property (assign) IBOutlet NSPopUpButton *formatButton;
 @property (assign) IBOutlet NSPopUpButton *resolutionButton;
 @property (assign) IBOutlet NSPopUpButton *scalingButton;
+@property (assign) IBOutlet NSPopUpButton *frameRateButton;
+@property (assign) IBOutlet NSPopUpButton *deviceFormatButton;
 
 - (IBAction)clickStartButton:(id)sender;
 - (IBAction)clickStopButton:(id)sender;
@@ -44,6 +48,8 @@
 - (IBAction)clickScalingButton:(id)sender;
 - (IBAction)clickScreenButton:(id)sender;
 - (IBAction)clickInfoButton:(id)sender;
+- (IBAction)clickFrameRateButton:(id)sender;
+- (IBAction)clickDeviceFormatButton:(id)sender;
 
 - (void)checkStatus;
 

@@ -19,6 +19,8 @@
 @synthesize formatButton;
 @synthesize resolutionButton;
 @synthesize scalingButton;
+@synthesize frameRateButton;
+@synthesize deviceFormatButton;
 
 - (void)dealloc
 {
@@ -29,38 +31,61 @@
 {
     // Insert code here to initialize your application
     [previewView setWantsLayer:YES];
+    [captureView setWantsLayer:YES];
     
     captureEngine = [[AVCaptureEngine alloc] initWithView:previewView CaptureView:captureView];
+    [captureEngine setDelegate:self];
     
     [deviceName setTitleWithMnemonic:[captureEngine currentDeviceName]];
     
     [formatButton removeAllItems];
-    NSArray *allFormats = [captureEngine allFormats];
-    for(NSString* format in allFormats)
-    {
-        [formatButton addItemWithTitle:format];
-    }
+    [formatButton addItemsWithTitles:[captureEngine allFormats]];
     [formatButton selectItemWithTitle:[captureEngine activeFormat]];
     
     [resolutionButton removeAllItems];
-    NSArray *allResolutions = [captureEngine allResolutions];
-    for(NSString* resolution in allResolutions)
-    {
-        [resolutionButton addItemWithTitle:resolution];
-    }
+    [resolutionButton addItemsWithTitles:[captureEngine allResolutions]];
     [resolutionButton selectItemWithTitle:[captureEngine activeResolution]];
     
     [scalingButton removeAllItems];
-    NSArray *allScalingModes = [captureEngine allScalingModes];
-    for(NSString* scalingMode in allScalingModes)
-    {
-        [scalingButton addItemWithTitle:scalingMode];
-    }
+    [scalingButton addItemsWithTitles:[captureEngine allScalingModes]];
+    [scalingButton selectItemWithTitle:[captureEngine activeScalingMode]];
+    
+    [deviceFormatButton removeAllItems];
+    [deviceFormatButton addItemsWithTitles:[captureEngine allDeviceFormats]];
+    [deviceFormatButton selectItemWithTitle:[captureEngine activeDeviceFormat]];
+    
+    [frameRateButton removeAllItems];
+    [frameRateButton addItemsWithTitles:[captureEngine allFrameRates]];
+    [frameRateButton selectItemWithTitle:[captureEngine activeFrameRate]];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification
 {
 	[captureEngine release];
+}
+
+- (void)deviceChangeWithType:(AVCaptureDeviceChangeType)type
+{
+    switch (type) {
+        case AVCaptureDeviceChangeSelected:
+            [self clickSwitchButton:nil];
+            break;
+            
+        case AVCaptureDeviceChangeActiveFormat:
+            [deviceFormatButton removeAllItems];
+            [deviceFormatButton addItemsWithTitles:[captureEngine allDeviceFormats]];
+            [deviceFormatButton selectItemWithTitle:[captureEngine activeDeviceFormat]];
+            break;
+            
+        case AVCaptureDeviceChangeActiveFrameRate:
+            [frameRateButton removeAllItems];
+            [frameRateButton addItemsWithTitles:[captureEngine allFrameRates]];
+            [frameRateButton selectItemWithTitle:[captureEngine activeFrameRate]];
+            break;
+            
+        default:
+            break;
+    }
 }
 
 - (IBAction)clickStartButton:(id)sender
@@ -87,20 +112,20 @@
 	[deviceName setTitleWithMnemonic:[captureEngine currentDeviceName]];
     
     [formatButton removeAllItems];
-    NSArray *allFormats = [captureEngine allFormats];
-    for(NSString* format in allFormats)
-    {
-        [formatButton addItemWithTitle:format];
-    }
+    [formatButton addItemsWithTitles:[captureEngine allFormats]];
     [formatButton selectItemWithTitle:[captureEngine activeFormat]];
     
     [resolutionButton removeAllItems];
-    NSArray *allResolutions = [captureEngine allResolutions];
-    for(NSString* resolution in allResolutions)
-    {
-        [resolutionButton addItemWithTitle:resolution];
-    }
+    [resolutionButton addItemsWithTitles:[captureEngine allResolutions]];
     [resolutionButton selectItemWithTitle:[captureEngine activeResolution]];
+    
+    [deviceFormatButton removeAllItems];
+    [deviceFormatButton addItemsWithTitles:[captureEngine allDeviceFormats]];
+    [deviceFormatButton selectItemWithTitle:[captureEngine activeDeviceFormat]];
+    
+    [frameRateButton removeAllItems];
+    [frameRateButton addItemsWithTitles:[captureEngine allFrameRates]];
+    [frameRateButton selectItemWithTitle:[captureEngine activeFrameRate]];
 }
 
 - (IBAction)clickFormatButton:(id)sender
@@ -126,6 +151,16 @@
 - (IBAction)clickInfoButton:(id)sender
 {
     [captureEngine printDeviceInfo];
+}
+
+- (IBAction)clickFrameRateButton:(id)sender
+{
+    [captureEngine setFrameRate:[frameRateButton titleOfSelectedItem] Index:[frameRateButton indexOfSelectedItem]];
+}
+
+- (IBAction)clickDeviceFormatButton:(id)sender
+{
+    [captureEngine setDeviceFormat:[deviceFormatButton titleOfSelectedItem] Index:[deviceFormatButton indexOfSelectedItem]];
 }
 
 - (void)checkStatus

@@ -12,6 +12,16 @@
 
 #import "AVCaptureView.h"
 
+typedef NS_ENUM(NSInteger, AVCaptureDeviceChangeType) {
+    AVCaptureDeviceChangeSelected           = 0,
+    AVCaptureDeviceChangeActiveFormat       = 1,
+    AVCaptureDeviceChangeActiveFrameRate    = 2
+};
+
+@protocol AVCaptureEngineDelegate
+- (void)deviceChangeWithType:(AVCaptureDeviceChangeType)type;
+@end
+
 @interface AVCaptureEngine : NSObject <AVCaptureVideoDataOutputSampleBufferDelegate>
 {
 @private
@@ -46,9 +56,14 @@
     int totalFrameCount;
     
     AVCaptureView *captureView;
+    AVSampleBufferDisplayLayer *captureLayer;
+    
+    id<AVCaptureEngineDelegate> captuerDelegate;
 }
 
 - (id)initWithView:(NSView*)pView CaptureView:(AVCaptureView*)cView;
+
+- (void)setDelegate:(id<AVCaptureEngineDelegate>)delegate;
 
 - (BOOL)isRunning;
 - (void)startRunning;
@@ -61,15 +76,21 @@
 
 - (NSString*)currentDeviceName;
 - (NSArray*)allFormats;
-- (NSArray*)allCodecType;
+- (NSArray*)allCodecTypes;
 - (NSArray*)allResolutions;
 - (NSArray*)allScalingModes;
+- (NSArray*)allFrameRates;
+- (NSArray*)allDeviceFormats;
 - (void)setFormat:(NSString*)format;
 - (void)setResolution:(NSString*)resolution;
 - (void)setScalingMode:(NSString*)scalingMode;
+- (void)setFrameRate:(NSString*)frameRate Index:(NSInteger)index;
+- (void)setDeviceFormat:(NSString*)deviceFormat Index:(NSInteger)index;
 - (NSString*)activeFormat;
 - (NSString*)activeResolution;
 - (NSString*)activeScalingMode;
+- (NSString*)activeFrameRate;
+- (NSString*)activeDeviceFormat;
 - (NSString*)summaryInfo;
 
 @end
