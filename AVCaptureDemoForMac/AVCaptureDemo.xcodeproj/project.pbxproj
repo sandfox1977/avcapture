@@ -10,6 +10,7 @@
 		5717A4F5153E98AB00EB464B /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5717A4F4153E98AB00EB464B /* ApplicationServices.framework */; };
 		574FA681153D743D00A1CF42 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 574FA680153D743D00A1CF42 /* CoreMedia.framework */; };
 		574FA684153D758700A1CF42 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 574FA683153D758700A1CF42 /* CoreVideo.framework */; };
+		5774735F1CDB161F009E2EF2 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5774735E1CDB161F009E2EF2 /* CoreImage.framework */; };
 		57CF5E7A16819E0800D69354 /* AVCaptureView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 57CF5E7916819E0800D69354 /* AVCaptureView.mm */; };
 		57CF5E7D1681A18A00D69354 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57CF5E7C1681A18A00D69354 /* OpenGL.framework */; };
 		57E2C894153D659300658FB9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57E2C893153D659300658FB9 /* Cocoa.framework */; };
@@ -26,6 +27,7 @@
 		5717A4F4153E98AB00EB464B /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		574FA680153D743D00A1CF42 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		574FA683153D758700A1CF42 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		5774735E1CDB161F009E2EF2 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		57CF5E7816819E0800D69354 /* AVCaptureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVCaptureView.h; sourceTree = "<group>"; };
 		57CF5E7916819E0800D69354 /* AVCaptureView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AVCaptureView.mm; sourceTree = "<group>"; };
 		57CF5E7C1681A18A00D69354 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -52,6 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5774735F1CDB161F009E2EF2 /* CoreImage.framework in Frameworks */,
 				57CF5E7D1681A18A00D69354 /* OpenGL.framework in Frameworks */,
 				5717A4F5153E98AB00EB464B /* ApplicationServices.framework in Frameworks */,
 				574FA684153D758700A1CF42 /* CoreVideo.framework in Frameworks */,
@@ -84,6 +87,7 @@
 		57E2C892153D659300658FB9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5774735E1CDB161F009E2EF2 /* CoreImage.framework */,
 				57CF5E7C1681A18A00D69354 /* OpenGL.framework */,
 				5717A4F4153E98AB00EB464B /* ApplicationServices.framework */,
 				57E2C8BB153D672000658FB9 /* AVFoundation.framework */,

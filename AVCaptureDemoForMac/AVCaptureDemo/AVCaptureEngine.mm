@@ -17,6 +17,7 @@
 #define SET_CONNECTION_FPS      0
 #define USE_CAPTURE_LAYER       0
 #define ENABLE_REMOVE_LAYER     1
+#define ENABLE_FACE_DETECTOR    0
 
 NSString* kDefaultFormat = @"kCVPixelFormatType_Default";
 NSString* kScalingMode = AVVideoScalingModeResizeAspectFill;
@@ -762,6 +763,46 @@ static void capture_cleanup(void* p)
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
+#if ENABLE_FACE_DETECTOR
+    
+    CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, sampleBuffer, kCMAttachmentMode_ShouldPropagate);
+    CIImage *ciImage = [[CIImage alloc] initWithCVPixelBuffer:pixelBuffer options:(NSDictionary *)attachments];
+    if (attachments)
+        CFRelease(attachments);
+    
+    CIContext *context = [CIContext contextWithOptions:nil];
+    CIDetector *detecotr = [CIDetector detectorOfType:CIDetectorTypeFace context:context options:[NSDictionary dictionaryWithObject:CIDetectorAccuracyHigh forKey:CIDetectorAccuracy]];
+    
+    NSArray * results = [detecotr featuresInImage:ciImage options:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:6] forKey:CIDetectorImageOrientation]];
+    if( [results count] > 0 )
+    {
+        for(id image in results)
+        {
+            
+        }
+    }
+    
+#if 0
+    let resultImage = sampleBufferToImage(sampleBuffer)
+    
+    let context = CIContext(options:[kCIContextUseSoftwareRenderer:true])
+    let detecotr = CIDetector(ofType:CIDetectorTypeFace,  context:context, options:[CIDetectorAccuracy: CIDetectorAccuracyHigh])
+    
+    
+    
+    
+    let ciImage = CIImage(image: resultImage)
+    
+    let results:NSArray = detecotr.featuresInImage(ciImage,options: ["CIDetectorImageOrientation" : 6])
+    
+    for r in results {
+        let face:CIFaceFeature = r as! CIFaceFeature;
+        let faceImage = UIImage(CGImage: context.createCGImage(ciImage, fromRect: face.bounds),scale: 1.0, orientation: .Right)
+#endif
+    
+#endif
+    
 #if USE_CAPTURE_LAYER
     CMFormatDescriptionRef formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer);
     FourCharCode codecType = CMVideoFormatDescriptionGetCodecType(formatDescription);
