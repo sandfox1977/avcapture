@@ -16,7 +16,7 @@
 
 #import <OpenGL/glu.h>
 
-@interface AVCaptureView : NSOpenGLView
+@interface MyAVCaptureView : NSOpenGLView
 {
     GLsizei	m_width;  
 	GLsizei	m_height;
@@ -40,7 +40,7 @@
 
 #else
 
-@interface AVCaptureView : NSView
+@interface MyAVCaptureView : NSView
 {
     NSImageRep*         m_imageRep;
     int                 m_imageWidth;

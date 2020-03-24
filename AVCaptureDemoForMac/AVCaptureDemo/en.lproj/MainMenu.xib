@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15505" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment version="1070" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15505"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -646,6 +647,7 @@
                     </menu>
                 </menuItem>
             </items>
+            <point key="canvasLocation" x="140" y="154"/>
         </menu>
         <window title="AVCaptureDemo" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
@@ -716,7 +718,7 @@
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="591">
-                        <rect key="frame" x="128" y="167" width="52" height="17"/>
+                        <rect key="frame" x="128" y="167" width="52" height="16"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" baseWritingDirection="leftToRight" title="Device:" id="594">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -724,7 +726,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1689">
-                        <rect key="frame" x="127" y="132" width="51" height="17"/>
+                        <rect key="frame" x="127" y="132" width="51" height="16"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" baseWritingDirection="leftToRight" title="Format:" id="1691">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -732,7 +734,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1361">
-                        <rect key="frame" x="127" y="93" width="72" height="17"/>
+                        <rect key="frame" x="127" y="93" width="72" height="16"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" baseWritingDirection="leftToRight" title="Resolution:" id="1363">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -740,7 +742,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="592">
-                        <rect key="frame" x="198" y="167" width="263" height="17"/>
+                        <rect key="frame" x="198" y="167" width="263" height="16"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="259" id="4170"/>
                         </constraints>
@@ -751,7 +753,7 @@
                         </textFieldCell>
                     </textField>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1045">
-                        <rect key="frame" x="198" y="86" width="264" height="26"/>
+                        <rect key="frame" x="198" y="86" width="264" height="25"/>
                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="1046">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
@@ -762,7 +764,7 @@
                         </connections>
                     </popUpButton>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3732">
-                        <rect key="frame" x="128" y="55" width="52" height="17"/>
+                        <rect key="frame" x="128" y="55" width="52" height="16"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" baseWritingDirection="leftToRight" title="Scaling:" id="3736">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -770,7 +772,7 @@
                         </textFieldCell>
                     </textField>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3733">
-                        <rect key="frame" x="198" y="48" width="264" height="26"/>
+                        <rect key="frame" x="198" y="48" width="264" height="25"/>
                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="3734">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
@@ -781,7 +783,7 @@
                         </connections>
                     </popUpButton>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1771">
-                        <rect key="frame" x="197" y="125" width="264" height="26"/>
+                        <rect key="frame" x="197" y="125" width="264" height="25"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="259" id="4073"/>
                         </constraints>
@@ -795,7 +797,7 @@
                         </connections>
                     </popUpButton>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4103">
-                        <rect key="frame" x="485" y="55" width="77" height="17"/>
+                        <rect key="frame" x="485" y="55" width="77" height="16"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" baseWritingDirection="leftToRight" title="Frame Rate:" id="4108">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -803,7 +805,7 @@
                         </textFieldCell>
                     </textField>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4104">
-                        <rect key="frame" x="585" y="49" width="264" height="26"/>
+                        <rect key="frame" x="585" y="49" width="264" height="25"/>
                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="4106">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
@@ -814,7 +816,7 @@
                         </connections>
                     </popUpButton>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4192">
-                        <rect key="frame" x="485" y="92" width="96" height="17"/>
+                        <rect key="frame" x="485" y="92" width="96" height="16"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" baseWritingDirection="leftToRight" title="Device Format:" id="4197">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -822,7 +824,7 @@
                         </textFieldCell>
                     </textField>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4193">
-                        <rect key="frame" x="585" y="86" width="264" height="26"/>
+                        <rect key="frame" x="585" y="86" width="264" height="25"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="259" id="4195"/>
                         </constraints>
@@ -838,7 +840,7 @@
                     <splitView dividerStyle="paneSplitter" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3249">
                         <rect key="frame" x="0.0" y="197" width="986" height="390"/>
                         <subviews>
-                            <customView fixedFrame="YES" id="3250" customClass="AVCaptureView">
+                            <customView fixedFrame="YES" id="3250" customClass="MyAVCaptureView">
                                 <rect key="frame" x="0.0" y="0.0" width="508" height="390"/>
                                 <autoresizingMask key="autoresizingMask"/>
                             </customView>
@@ -849,12 +851,12 @@
                                     <splitView dividerStyle="paneSplitter" translatesAutoresizingMaskIntoConstraints="NO" id="3386">
                                         <rect key="frame" x="0.0" y="0.0" width="468" height="390"/>
                                         <subviews>
-                                            <customView id="3387">
+                                            <customView misplaced="YES" id="3387">
                                                 <rect key="frame" x="0.0" y="0.0" width="468" height="18"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <textField verticalHuggingPriority="750" preferredMaxLayoutWidth="468" translatesAutoresizingMaskIntoConstraints="NO" id="2030">
-                                                        <rect key="frame" x="-2" y="0.0" width="472" height="18"/>
+                                                        <rect key="frame" x="-2" y="0.0" width="472" height="14"/>
                                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="2031">
                                                             <font key="font" size="12" name="ArialMT"/>
                                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>

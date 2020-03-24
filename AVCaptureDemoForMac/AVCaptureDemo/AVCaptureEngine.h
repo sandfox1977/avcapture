@@ -55,13 +55,13 @@ typedef NS_ENUM(NSInteger, AVCaptureDeviceChangeType) {
     int frameCount;
     int totalFrameCount;
     
-    AVCaptureView *captureView;
+    MyAVCaptureView *captureView;
     AVSampleBufferDisplayLayer *captureLayer;
     
     id<AVCaptureEngineDelegate> captuerDelegate;
 }
 
-- (id)initWithView:(NSView*)pView CaptureView:(AVCaptureView*)cView;
+- (id)initWithView:(NSView*)pView CaptureView:(MyAVCaptureView*)cView;
 
 - (void)setDelegate:(id<AVCaptureEngineDelegate>)delegate;
 

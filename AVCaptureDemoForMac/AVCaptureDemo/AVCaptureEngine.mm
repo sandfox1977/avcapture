@@ -57,7 +57,7 @@ static void capture_cleanup(void* p)
 
 @implementation AVCaptureEngine
 
-- (id)initWithView:(NSView*)pView CaptureView:(AVCaptureView*)cView
+- (id)initWithView:(NSView*)pView CaptureView:(MyAVCaptureView*)cView
 {
     self = [super init];
 	if(NULL != self)

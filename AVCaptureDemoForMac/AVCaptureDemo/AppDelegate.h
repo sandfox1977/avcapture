@@ -15,7 +15,7 @@
 {
     NSWindow *window;
     NSView *previewView;
-    AVCaptureView *captureView;
+    MyAVCaptureView *captureView;
     NSTextField *summaryInfo;
     NSTextField *deviceName;
     NSPopUpButton *formatButton;
@@ -31,7 +31,7 @@
 
 @property (assign) IBOutlet NSWindow *window;
 @property (assign) IBOutlet NSView *previewView;
-@property (assign) IBOutlet AVCaptureView *captureView;
+@property (assign) IBOutlet MyAVCaptureView *captureView;
 @property (assign) IBOutlet NSTextField *summaryInfo;
 @property (assign) IBOutlet NSTextField *deviceName;
 @property (assign) IBOutlet NSPopUpButton *formatButton;

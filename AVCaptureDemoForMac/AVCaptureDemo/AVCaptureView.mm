@@ -10,7 +10,7 @@
 
 #if 0
 
-@implementation AVCaptureView
+@implementation MyAVCaptureView
 
 - (id)initWithFrame:(NSRect)frame
 {
@@ -371,7 +371,7 @@ int convert_y420nv_to_rgb24_buffer(unsigned char *y, unsigned char *uv, unsigned
     
 }
 
-@implementation AVCaptureView
+@implementation MyAVCaptureView
 
 - (id)initWithFrame:(NSRect)frame
 {
