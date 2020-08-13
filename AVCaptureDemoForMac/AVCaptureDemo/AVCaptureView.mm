@@ -8,7 +8,7 @@
 
 #import "AVCaptureView.h"
 
-#if 0
+#if USE_OPENGL_RENDER
 
 @implementation MyAVCaptureView
 
@@ -149,7 +149,7 @@
     [NSOpenGLContext clearCurrentContext];
 }
 
-- (int)renderFrame:(unsigned char*)data Length:(int)len Width:(int)width Height:(int)height Format:(OSType)pixelFormat
+- (int)renderFrame:(unsigned char**)data Length:(int*)len Count:(int)count Width:(int)width Height:(int)height Format:(OSType)pixelFormat
 {
     if([m_lock tryLock])
     {
@@ -208,11 +208,11 @@
             }
 		}
         
-        glViewport(bounds.origin.x, bounds.origin.y, bounds.size.width, bounds.size.height);kCGBitmapByteOrder32Little
+        glViewport(bounds.origin.x, bounds.origin.y, bounds.size.width, bounds.size.height);
         
         glPixelZoom(1.0, 1.0);
         glRasterPos2f(0.0, 0.0);
-        glDrawPixels(width, height, glFormat, glType, data);
+        glDrawPixels(width, height, glFormat, glType, data[0]);
         
         GLsizei round_width = 1;
         GLsizei round_height = 1;	

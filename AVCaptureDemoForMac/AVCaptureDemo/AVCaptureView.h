@@ -12,7 +12,9 @@
 #import <AVFoundation/AVFoundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
-#if 0
+#define USE_OPENGL_RENDER   0
+
+#if USE_OPENGL_RENDER
 
 #import <OpenGL/glu.h>
 
@@ -34,7 +36,7 @@
     NSRecursiveLock*	m_lock;
 }
 
-- (int)renderFrame:(unsigned char* [])data Length:(int [])len Count:(int)count Width:(int)width Height:(int)height Format:(OSType)pixelFormat;
+- (int)renderFrame:(unsigned char**)data Length:(int*)len Count:(int)count Width:(int)width Height:(int)height Format:(OSType)pixelFormat;
 
 @end
 

@@ -15,7 +15,7 @@
 #define OPEN_SCREEN_CAPTURE     0
 #define OPEN_CAPTURE_THREAD     1
 #define SET_CONNECTION_FPS      0
-#define USE_CAPTURE_LAYER       0
+#define USE_CAPTURE_LAYER       1
 #define ENABLE_REMOVE_LAYER     1
 
 NSString* kDefaultFormat = @"kCVPixelFormatType_Default";
@@ -140,6 +140,7 @@ static void capture_cleanup(void* p)
         
         // create screen capture input
         screenInput = [[AVCaptureScreenInput alloc] initWithDisplayID:kCGDirectMainDisplay];
+        screenInput.minFrameDuration = CMTimeMakeWithSeconds(1.0 / kFrameRate, 10000);
         bScreenCapture = NO;
 #if OPEN_SCREEN_CAPTURE
         [captureSession addInput:screenInput];
